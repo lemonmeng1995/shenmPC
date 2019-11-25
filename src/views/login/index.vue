@@ -54,7 +54,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-
+import Cookies from 'js-cookie'
 export default {
   name: 'Login',
   data() {
@@ -76,8 +76,9 @@ export default {
       loginForm: {
         // username: 'admin',
         // password: '111111'
-          username: '17683841934',
-        password: 'HANhan620806'
+       
+        username: '15574984321',
+        password: '123456789'
       },
       // loginRules: {
       //   username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -89,32 +90,36 @@ export default {
     }
   },
   watch: {
-    $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect
-      },
-      immediate: true
-    }
+    // $route: {
+    //   handler: function(route) {
+    //     this.redirect = route.query && route.query.redirect
+    //     console.log(" this.redirect", route,this.redirect)
+    //   },
+    //   immediate: true
+    // }
   },
   methods: {
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+      // if (this.passwordType === 'password') {
+      //   this.passwordType = ''
+      // } else {
+      //   this.passwordType = 'password'
+      // }
+      // this.$nextTick(() => {
+      //   this.$refs.password.focus()
+      // })
     },
     handleLogin() {
       console.log("信息，",this.loginForm)
+      // Cookies.set('vue_admin_template_token', this.loginForm.password)
+      //  this.$router.push({ path:'/' })
+
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
           let params = new FormData()
-          params.append("password",this.loginForm.username)
-          params.append("phoneNum",this.loginForm.password)
+          params.append("phoneNum",this.loginForm.username)
+          params.append("password",this.loginForm.password)
           this.$axios.defaults.headers.post['Content-Type']='multipart/form-data;charse=UTF-8'
           this.$axios({
             url:this.$api.apis.getloginapi,
@@ -127,9 +132,18 @@ export default {
             //   }
 
           }).then(res => {
+           
               console.log("res************",res)
-              if(res.errCode =="0000"){ 
+              if(res.data.errCode =="0000"){ 
+                 this.loading = false
+                localStorage.setItem('phoneNumUser',res.data.data.phoneNum) 
+                this.$router.push({ path: '/' })
                 
+              }else{
+                 this.$message({
+          message: res.data.errMsg,
+          type: 'error'
+        });
               }
           }).catch(() => {
             this.loading = false

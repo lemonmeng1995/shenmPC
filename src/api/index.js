@@ -8,7 +8,10 @@ if (process.env.NODE_ENV == 'development') {
     baseUrl = 'http://www.shenmaguanggao.top/card'; 
 }
 const apis = {
-    getloginapi : baseUrl + '/smUserinfo/isLogin'   // 登录接口
+    getloginapi : baseUrl + '/smUserinfo/isLogin',   // 登录接口
+    selectUserInfo: baseUrl + '/smUserinfo/selectUserInfo',
+    updateUserInfo: baseUrl + '/smUserinfo/updateUserInfo'
+ 
 }
 //校验手机号码
 function isPoneAvailable(phone) {

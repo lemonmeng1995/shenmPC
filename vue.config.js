@@ -14,6 +14,7 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 // You can change the port by the following methods:
 // port = 9528 npm run dev OR npm run dev --port = 9528
 const port = process.env.port || process.env.npm_config_port || 9528 // dev port
+console.log("123,走",process.env.NODE_ENV)
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -39,12 +40,23 @@ module.exports = {
     proxy: {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
-      [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:${port}/mock`,
-        changeOrigin: true,
+
+      // [process.env.VUE_APP_BASE_API]: {
+      //   target: `http://127.0.0.1:${port}/mock`,
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + process.env.VUE_APP_BASE_API]: ''
+      //   }
+      // }
+     
+      '/api': {   
+        target: 'http://www.shenmaguanggao.top/card', // 接口的域名   http://www.shenmaguanggao.top  
+        changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
+        // secure:false,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
+          '^/api': ''
         }
+      
       }
     },
     after: require('./mock/mock-server.js')
@@ -137,3 +149,4 @@ module.exports = {
       )
   }
 }
+

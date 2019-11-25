@@ -1,9 +1,9 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="loginForm" :model="loginForm"  class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">神马名片管理后台</h3>
       </div>
 
       <el-form-item prop="username">
@@ -43,10 +43,10 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
-      <div class="tips">
+      <!-- <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
         <span> password: any</span>
-      </div>
+      </div> -->
 
     </el-form>
   </div>
@@ -74,13 +74,15 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        // username: 'admin',
+        // password: '111111'
+          username: '17683841934',
+        password: 'HANhan620806'
       },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
-      },
+      // loginRules: {
+      //   username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+      //   password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+      // },
       loading: false,
       passwordType: 'password',
       redirect: undefined
@@ -106,12 +108,29 @@ export default {
       })
     },
     handleLogin() {
+      console.log("信息，",this.loginForm)
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
+          let params = new FormData()
+          params.append("password",this.loginForm.username)
+          params.append("phoneNum",this.loginForm.password)
+          this.$axios.defaults.headers.post['Content-Type']='multipart/form-data;charse=UTF-8'
+          this.$axios({
+            url:this.$api.apis.getloginapi,
+            method:"post",
+            data:params,
+            // headers: {
+            //     'Content-Type': 'multipart/form-data; charset=utf-8'   //form data 格式请求头
+            //     // 'Content-Type': 'application/json'  
+                
+            //   }
+
+          }).then(res => {
+              console.log("res************",res)
+              if(res.errCode =="0000"){ 
+                
+              }
           }).catch(() => {
             this.loading = false
           })

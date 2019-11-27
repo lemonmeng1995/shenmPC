@@ -137,7 +137,7 @@ export default {
               if(res.data.errCode =="0000"){ 
                  this.loading = false
                 localStorage.setItem('phoneNumUser',res.data.data.phoneNum) 
-                this.$router.push({ path: '/dashboard/dashboard'})
+                this.$router.push({ path: '/'})
                 
               }else{
                  this.$message({

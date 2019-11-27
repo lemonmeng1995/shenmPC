@@ -131,6 +131,10 @@ export default {
                 //   item.data=""
                 // })
                 this.tableDataUrl.forEach((item,index) => {
+                  console.log("有什么问题，",item.duTime)
+                   const d = new Date(item.duTime)
+                 const resDate = d.getFullYear() + '-' + (Number(d.getMonth()) + 1) + '-' + d.getDate()
+                 item.duTime = resDate
                   item.xufeibiao = "300/年"
                   item.dataxufei = ""
                   // item.erweiImage = "@/assets/404_images/404.png"
@@ -199,6 +203,9 @@ export default {
                 this.tableDataUrl.forEach((item,index) => {
                   item.xufeibiao = "300/年"
                   item.dataxufei = ""
+                  const d = new Date(item.duTime)
+                 const resDate = d.getFullYear() + '-' + (Number(d.getMonth()) + 1) + '-' + d.getDate()
+                 item.duTime = resDate
                 }) 
               }else{
                 Toast(res)
@@ -208,7 +215,7 @@ export default {
           })
     },
     handleClick(index, row){
-      console.log("status",status,this.dutdata, this.tableDataUrl[index].dataxufei)
+      console.log("status..............",status,this.dutdata, this.tableDataUrl[index].dataxufei)
     this.$axios({
             url:this.$api.apis.updateUserInfo,
             method:"post",

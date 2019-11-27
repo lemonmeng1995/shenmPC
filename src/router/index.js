@@ -33,28 +33,28 @@ export const constantRoutes = [
       meta: { title: '续费管理', icon: 'dashboard' }
     }]
   },
-  {
-    path: '/advertising',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '广告位管理', icon: 'example' }
-    }]
-  },
-  {
-    path: '/probationperiod',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '试用期管理', icon: 'nested' }
-    }]
-  },
+  // {
+  //   path: '/advertising',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   children: [{
+  //     path: 'dashboard',
+  //     name: 'Dashboard',
+  //     component: () => import('@/views/dashboard/index'),
+  //     meta: { title: '广告位管理', icon: 'example' }
+  //   }]
+  // },
+  // {
+  //   path: '/probationperiod',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   children: [{
+  //     path: 'dashboard',
+  //     name: 'Dashboard',
+  //     component: () => import('@/views/dashboard/index'),
+  //     meta: { title: '试用期管理', icon: 'nested' }
+  //   }]
+  // },
 
 
   // {

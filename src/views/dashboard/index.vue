@@ -31,13 +31,13 @@
       prop="dataxufei"
       label="续费日期">
       <template slot-scope="scope">
-         <el-date-picker
-      v-model="value1"
+         <!-- <el-date-picker
+      v-model="scope.row.data"
       type="date"
       placeholder="Pick a day">
-    </el-date-picker>
+    </el-date-picker> -->
         <el-date-picker
-      v-model='dutdata'
+      v-model="scope.row.dataxufei"
       ref="val"
       type="date"
       @change="handleEdit(scope.$index, scope.row)"
@@ -45,6 +45,18 @@
     </el-date-picker>
       </template>
     </el-table-column>
+
+     <el-table-column
+     label="二维码">
+      <template slot-scope="scope">
+        <img class="pic-404__parent" src="@/assets/erweima.png"  style="width: 30px; height: 30px" @click="handleGeterwei(scope.$index,scope.row)">
+         <!-- <el-image
+      style="width: 100px; height: 100px"
+      src="@/assets/erweima.png" 
+      :fit="fit"></el-image> -->
+      </template>
+    </el-table-column>
+
       <el-table-column
      label="操作">
       <template slot-scope="scope">
@@ -52,12 +64,24 @@
       </template>
     </el-table-column>
   </el-table>
+
+  <el-dialog
+  title="个人名片二维码"
+  :visible.sync="dialogVisible"
+  width="30%"
+ >
+  <div class="qrCode" id="qrcode" ref="qrcode" :style="{width:150+'px',height:150+'px',margin:'auto'}"></div> 
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+</el-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-
+import QRCode from 'qrcodejs2'
 export default {
   name: 'Dashboard',
   computed: {
@@ -68,6 +92,7 @@ export default {
   data(){
     return{
        phoneNum:'',
+       dialogVisible:false,
        tableDataUrl:[],
        dutdata:"",
        tableData: [{
@@ -90,37 +115,74 @@ export default {
     }
   },
   created(){
-    //  this.$axios({
-    //         url:this.$api.apis.selectUserInfo,
-    //         method:"get",
-    //         headers: {
-    //             // 'Content-Type': 'multipart/form-data; charset=utf-8'   //form data 格式请求头
-    //             'Content-Type': 'application/json'               
-    //           }
+     this.$axios({
+            url:this.$api.apis.selectUserInfo,
+            method:"get",
+            headers: {
+                // 'Content-Type': 'multipart/form-data; charset=utf-8'   //form data 格式请求头
+                'Content-Type': 'application/json'               
+              }
 
-    //       }).then(res => {
-           
-    //           console.log("res************",res)
-    //           if(res.data.errCode =="0000"){ 
-    //             this.tableDataUrl = res.data.data
-    //             this.tableDataUrl.forEach((item,index) => {
-    //               item.xufeibiao = "300/年"
-    //               item.dataxufei = ""
-    //             })
-                
-               
-                
-    //           }else{
-    //             Toast(res)
-    //           }
-    //       }).catch(() => {
-    //        console.log("cuowu")
-    //       })
+          }).then(res => {      
+              console.log("res************",res)
+              if(res.data.errCode =="0000"){ 
+                this.tableDataUrl = res.data.data
+                // this.tableDataUrl.forEach((item,index)=>{
+                //   item.data=""
+                // })
+                this.tableDataUrl.forEach((item,index) => {
+                  item.xufeibiao = "300/年"
+                  item.dataxufei = ""
+                  // item.erweiImage = "@/assets/404_images/404.png"
+                })  
+              }else{
+                Toast(res)
+              }
+          }).catch(() => {
+           console.log("cuowu")
+          })
 
   },
   methods:{
+    handleGeterwei(index, row){
+      console.log("这一条的信息，",row,row.customerNo)
+      this.dialogVisible = true
+       let shareUrl = "http://www.shenmaguanggao.top"
+        setTimeout(() => {
+                document.getElementById("qrcode").innerHTML = "";
+                let customerNoLin = row.customerNo
+              this.qrCode(`${shareUrl}/home?customerNo=${customerNoLin}`)
+                // this.qrCode(`是我的呀`)
+            }, 500);
+
+     
+     
+     
+     
+    },
+         //转二维码
+      qrCode (url) {
+          let qrcode = new QRCode('qrcode', {
+              width: 150, //图像宽度
+              height: 150, //图像高度
+              colorDark : "#000000", //前景色
+              colorLight : "#ffffff", //背景色
+              correctLevel : QRCode.CorrectLevel.H //容错级别 容错级别有：（1）QRCode.CorrectLevel.L （2）QRCode.CorrectLevel.M （3）QRCode.CorrectLevel.Q （4）QRCode.CorrectLevel.H
+          })
+          qrcode.clear() //清除二维码 
+          qrcode.makeCode(url) //生成另一个新的二维码
+             setTimeout(() => {
+                // this.toImage()
+            }, 20);
+      },
+        //关闭二维码的
+        closePopup(){
+            this.showqrCode = !this.dialogVisible;
+        document.body.style.overflow = 'inherit';
+     
+
+        },
     getSearch(){
-      console.log("phoneNum",this.phoneNum)
          this.$axios({
             url:this.$api.apis.selectUserInfo +`?phoneNum=${this.phoneNum}`,
             method:"get",
@@ -130,29 +192,23 @@ export default {
                 'Content-Type': 'application/json'               
               }
 
-          }).then(res => {
+          }).then(res => {      
            
-              console.log("res************",res)
               if(res.data.errCode =="0000"){ 
                 this.tableDataUrl = res.data.data
                 this.tableDataUrl.forEach((item,index) => {
                   item.xufeibiao = "300/年"
                   item.dataxufei = ""
-                })
-                
-               
-                
+                }) 
               }else{
                 Toast(res)
               }
           }).catch(() => {
            console.log("cuowu")
           })
-
     },
     handleClick(index, row){
       console.log("status",status,this.dutdata, this.tableDataUrl[index].dataxufei)
-    
     this.$axios({
             url:this.$api.apis.updateUserInfo,
             method:"post",
@@ -161,17 +217,13 @@ export default {
                 // 'Content-Type': 'multipart/form-data; charset=utf-8'   //form data 格式请求头
                 'Content-Type': 'application/json'               
               }
-
-          }).then(res => {
-           
-              console.log("res************",res)
+          }).then(res => {       
               if(res.data.errCode =="0000"){ 
-                  this.tableDataUrl[index].duTime = this.tableDataUrl[index].dataxufei
-           
+                  // this.tableDataUrl[index].duTime = this.tableDataUrl[index].dataxufei      
                   this.$message({
-          message: '续费成功！',
-          type: 'success'
-        });
+                message: '续费成功！',
+                type: 'success'
+              });
                
                 
               }else{
@@ -196,6 +248,8 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard {
+
+
   &-container {
     margin: 30px;
   }

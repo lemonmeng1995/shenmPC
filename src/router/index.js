@@ -7,9 +7,13 @@ Vue.use(Router)
 import Layout from '@/layout'
 export const constantRoutes = [
   {
+    path: '/',
+    redirect: '/login',
+  },
+  {
     path: '/login',
     component: () => import('@/views/login/index'),
-    hidden: true
+    //hidden: true
   },
 
   {
@@ -19,9 +23,9 @@ export const constantRoutes = [
   },
 
   {
-    path: '/',
+    path: '/dashboard',
     component: Layout,
-    redirect: '/dashboard',
+    //redirect: '/dashboard',
     children: [{
       path: 'dashboard',
       name: 'Dashboard',

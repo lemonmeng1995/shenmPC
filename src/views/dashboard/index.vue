@@ -61,6 +61,12 @@
      label="操作">
       <template slot-scope="scope">
         <el-button @click="handleClick(scope.$index,scope.row)" type="text" size="small">确认</el-button>
+         <el-button
+          @click.native.prevent="deleteRow(scope.$index, scope.row)"
+          type="text"
+          size="small">
+          删除
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -115,7 +121,40 @@ export default {
     }
   },
   created(){
-     this.$axios({
+    this.getData()
+   
+
+  },
+  methods:{
+    deleteRow(index, row){
+       let params = new FormData()
+      params.append("customerNo",row.customerNo)
+       this.$axios({
+            url:this.$api.apis.deleteUserInfo,
+            method:"post",
+            data:params,
+            headers: {
+                'Content-Type': 'multipart/form-data; charset=utf-8'   //form data 格式请求头
+                // 'Content-Type': 'application/json'               
+              }
+
+          }).then(res => { 
+           
+            if(res.data.errCode == "0000"){
+                 this.getData()
+                 this.$message({
+                message: '删除成功！',
+                type: 'success'
+              });
+
+            }
+          
+
+          })
+
+    },
+    getData(){
+        this.$axios({
             url:this.$api.apis.selectUserInfo,
             method:"get",
             headers: {
@@ -124,14 +163,9 @@ export default {
               }
 
           }).then(res => {      
-              console.log("res************",res)
               if(res.data.errCode =="0000"){ 
                 this.tableDataUrl = res.data.data
-                // this.tableDataUrl.forEach((item,index)=>{
-                //   item.data=""
-                // })
                 this.tableDataUrl.forEach((item,index) => {
-                  console.log("有什么问题，",item.duTime)
                    const d = new Date(item.duTime)
                  const resDate = d.getFullYear() + '-' + (Number(d.getMonth()) + 1) + '-' + d.getDate()
                  item.duTime = resDate
@@ -146,10 +180,8 @@ export default {
            console.log("cuowu")
           })
 
-  },
-  methods:{
+    },
     handleGeterwei(index, row){
-      console.log("这一条的信息，",row,row.customerNo)
       this.dialogVisible = true
        let shareUrl = "http://www.shenmaguanggao.top"
         setTimeout(() => {
@@ -158,11 +190,6 @@ export default {
               this.qrCode(`${shareUrl}/home?customerNo=${customerNoLin}`)
                 // this.qrCode(`是我的呀`)
             }, 500);
-
-     
-     
-     
-     
     },
          //转二维码
       qrCode (url) {
@@ -215,7 +242,6 @@ export default {
           })
     },
     handleClick(index, row){
-      console.log("status..............",status,this.dutdata, this.tableDataUrl[index].dataxufei)
     this.$axios({
             url:this.$api.apis.updateUserInfo,
             method:"post",
@@ -245,7 +271,6 @@ export default {
        
         const d = new Date(this.dutdata)
         const resDate = d.getFullYear() + '-' + (Number(d.getMonth()) + 1) + '-' + d.getDate()
-       console.log(index, row,this.$refs,this.$refs.val,this.dutdata,resDate);
       //  this.tableDataUrl[index].duTime = resDate
        this.tableDataUrl[index].dataxufei = resDate
     },

@@ -10,7 +10,8 @@ if (process.env.NODE_ENV == 'development') {
 const apis = {
     getloginapi : baseUrl + '/smUserinfo/isLogin',   // 登录接口
     selectUserInfo: baseUrl + '/smUserinfo/selectUserInfo',
-    updateUserInfo: baseUrl + '/smUserinfo/updateUserInfo'
+    updateUserInfo: baseUrl + '/smUserinfo/updateUserInfo',
+    deleteUserInfo: baseUrl + '/smUserinfo/deleteUserInfo',
  
 }
 //校验手机号码
